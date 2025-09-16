@@ -11,6 +11,7 @@ on:
 
 env:
   IS_PULL: ${{ github.event_name == 'pull_request' }}
+  HAS_SECRETS: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' && secrets.DOCKERHUB_ACCOUNT != '' }}
 
 defaults:
   run:
