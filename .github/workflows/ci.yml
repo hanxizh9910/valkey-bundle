@@ -61,7 +61,7 @@ jobs:
 
       - name: Set DOCKER_REPO_NAME dynamically
         run: |
-          if [[ "${{ env.IS_PULL }}" == "true" ]]; then
+          if [[ "${{ env.IS_PULL }}" == "true" || "${{ env.HAS_SECRETS }}" != "true" ]]; then
             echo "DOCKER_REPO_NAME=${{ github.actor }}/valkey-bundle" >> $GITHUB_ENV
           else
             echo "DOCKER_REPO_NAME=${{ secrets.DOCKERHUB_ACCOUNT }}/valkey-bundle" >> $GITHUB_ENV
@@ -74,7 +74,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: env.IS_PULL != 'true'
+        if: env.HAS_SECRETS == 'true' && env.IS_PULL != 'true'
         uses: docker/login-action@v3
         with:
           registry: docker.io
@@ -92,6 +92,7 @@ jobs:
           echo "$tags" > tags.txt
 
       - name: Upload Tags Artifact
+        if: env.HAS_SECRETS == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: tags-${{ matrix.version.name }}
@@ -105,8 +106,8 @@ jobs:
         with:
           file: ./${{ matrix.version.meta.entries[0].directory }}/Dockerfile
           platforms: ${{ matrix.platform }}
-          # Push is true only for push events
-          push: ${{ env.IS_PULL != 'true' }}
+          # Push is true only for push events with secrets
+          push: ${{ env.HAS_SECRETS == 'true' && env.IS_PULL != 'true' }}
           outputs: type=image,push-by-digest=true,name-canonical=true
           tags: ${{ env.DOCKER_REPO_NAME }}
           provenance: false
@@ -142,6 +143,7 @@ jobs:
           
       # Export digest to a file to reference it later in merging manifests
       - name: Export digest
+        if: env.HAS_SECRETS == 'true'
         id: export-digest
         run: |
           mkdir -p ${{ runner.temp }}/digests
@@ -162,6 +164,7 @@ jobs:
           echo "version_major_minor=$major_minor" >> "$GITHUB_OUTPUT"
     
       - name: Upload digest for version-distro combination
+        if: env.HAS_SECRETS == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ steps.export-digest.outputs.version_major_minor }}-${{ steps.export-digest.outputs.linux_distro }}-${{ env.PLATFORM_PAIR }}
