@@ -171,6 +171,7 @@ jobs:
 
   # Job to merge architecture-specific images into a single multi-arch manifest
   merge-manifest:
+    if: env.HAS_SECRETS == 'true'
     runs-on: ubuntu-latest
     needs: [generate-jobs, build_and_push]
     steps:
@@ -266,7 +267,7 @@ jobs:
           done
           
   update-dockerhub-description:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/mainline'
+    if: env.HAS_SECRETS == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/mainline'
     needs: merge-manifest
     name: Update DockerHub Description
     uses: ./.github/workflows/update-dockerhub-docs.yml
