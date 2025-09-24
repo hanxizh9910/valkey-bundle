@@ -120,6 +120,7 @@ jobs:
         run: ${{ matrix.version.runs.prepare }}
 
       - name: Validation Tests ${{ matrix.version.name }}
+        if: env.HAS_SECRETS == 'true'
         run: |
           docker images
           set -- "${{ env.DOCKER_REPO_NAME }}"
