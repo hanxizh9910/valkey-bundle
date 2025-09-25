@@ -61,7 +61,9 @@ jobs:
 
       - name: Set DOCKER_REPO_NAME dynamically
         run: |
-          if [[ "${{ env.IS_PULL }}" == "true" || "${{ env.HAS_SECRETS }}" != "true" ]]; then
+          if [[ "${{ env.IS_PULL }}" == "true" ]]; then
+            echo "DOCKER_REPO_NAME=${{ github.actor }}/valkey-bundle" >> $GITHUB_ENV
+          elif [[ "${{ env.HAS_SECRETS }}" != "true" ]]; then
             echo "DOCKER_REPO_NAME=${{ github.actor }}/valkey-bundle" >> $GITHUB_ENV
           else
             echo "DOCKER_REPO_NAME=${{ secrets.DOCKERHUB_ACCOUNT }}/valkey-bundle" >> $GITHUB_ENV
