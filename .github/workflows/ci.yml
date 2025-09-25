@@ -68,11 +68,9 @@ jobs:
           fi
 
       - name: Set up QEMU
-        if: env.HAS_SECRETS == 'true'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        if: env.HAS_SECRETS == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
