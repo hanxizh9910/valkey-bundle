@@ -76,7 +76,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: env.HAS_SECRETS == 'true'
+        if: env.IS_PULL != 'true' && env.HAS_SECRETS == 'true'
         uses: docker/login-action@v3
         with:
           registry: docker.io
@@ -202,7 +202,7 @@ jobs:
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
-        if: env.IS_PULL != 'true' && env.HAS_SECRETS == 'true'
+        if: env.IS_PULL != 'true'
         with:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
