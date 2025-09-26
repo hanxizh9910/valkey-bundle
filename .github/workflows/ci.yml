@@ -175,7 +175,7 @@ jobs:
           retention-days: 1
 
   # Job to merge architecture-specific images into a single multi-arch manifest
-    merge-manifest:
+  merge-manifest:
     runs-on: ubuntu-latest
     needs: [generate-jobs, build_and_push]
     steps:
