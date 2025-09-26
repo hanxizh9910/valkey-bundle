@@ -264,17 +264,13 @@ jobs:
               docker buildx imagetools create $tag_args $digest_args
             fi
           done
-          
-  update-dockerhub-description:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/mainline'
-    needs: merge-manifest
-    name: Update DockerHub Description
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update DockerHub Description
-        if: env.HAS_SECRETS == 'true'
-        uses: ./.github/workflows/update-dockerhub-docs.yml
-        with:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
+
+update-dockerhub-description:
+  if: github.event_name == 'push' && github.ref == 'refs/heads/mainline' && env.HAS_SECRETS == 'true'
+  needs: merge-manifest
+  name: Update DockerHub Description
+  uses: ./.github/workflows/update-dockerhub-docs.yml
+  secrets:
+    DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
