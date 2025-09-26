@@ -266,7 +266,7 @@ jobs:
           done
 
   update-dockerhub-description:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/mainline' && env.HAS_SECRETS == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/mainline' && secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' && secrets.DOCKERHUB_REPOSITORY != ''
     needs: merge-manifest
     name: Update DockerHub Description
     uses: ./.github/workflows/update-dockerhub-docs.yml
