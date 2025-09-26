@@ -5,11 +5,11 @@ on:
   workflow_call:
     secrets:
       DOCKERHUB_USERNAME:
-        required: false
+        required: true
       DOCKERHUB_TOKEN:
-        required: false
+        required: true
       DOCKERHUB_REPOSITORY:
-        required: false
+        required: true
 
 jobs:
   update-dockerhub:
