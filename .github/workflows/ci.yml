@@ -33,7 +33,6 @@ jobs:
           strategy="$("$BASHBREW_SCRIPTS/github-actions/generate.sh")"
           echo "strategy=$(jq -c . <<<"$strategy")" >> "$GITHUB_OUTPUT"
           jq . <<<"$strategy" # debugging aid to visually inspect the generated matrix
-          
   # Job to build and push Docker images individually for each architecture/platform
   build_and_push:
     needs: [generate-jobs]
@@ -108,7 +107,7 @@ jobs:
         with:
           file: ./${{ matrix.version.meta.entries[0].directory }}/Dockerfile
           platforms: ${{ matrix.platform }}
-          # Push is true only for push events with secrets
+          # Push is true only for push events if the secrets have been created
           push: ${{ env.HAS_SECRETS == 'true' && env.IS_PULL != 'true' }}
           outputs: type=image,push-by-digest=true,name-canonical=true
           tags: ${{ env.DOCKER_REPO_NAME }}
